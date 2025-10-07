@@ -2,17 +2,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GOOGLE_API_KEY;
 if (!apiKey) {
-  console.error("GOOGLE_API_KEY is not set");
   throw new Error("GOOGLE_API_KEY is not set");
 }
 
-let genAI: GoogleGenerativeAI;
-try {
-  genAI = new GoogleGenerativeAI(apiKey);
-} catch (error) {
-  console.error("Failed to initialize Google AI client:", error);
-  throw new Error("Failed to initialize Google AI client");
-}
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req: Request) {
   try {

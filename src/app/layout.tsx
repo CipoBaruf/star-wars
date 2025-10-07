@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,19 +30,41 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <header className="w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <nav className="max-w-5xl mx-auto flex items-center gap-6 p-4">
-            <a href="/" className="font-semibold hover:underline">
+          <nav
+            className="max-w-5xl mx-auto flex items-center gap-6 p-4"
+            role="navigation"
+            aria-label="Main navigation"
+          >
+            <Link
+              href="/"
+              className="font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+            >
               Home
-            </a>
-            <a href="/characters" className="hover:underline">
+            </Link>
+            <Link
+              href="/characters"
+              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+            >
               Characters
-            </a>
-            <a href="/planets" className="hover:underline">
+            </Link>
+            <Link
+              href="/planets"
+              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+            >
               Planets
-            </a>
-            <a href="/spaceships-and-vehicles" className="hover:underline">
-              Spaceships & Vehicles
-            </a>
+            </Link>
+            <Link
+              href="/spaceships"
+              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+            >
+              Spaceships
+            </Link>
+            <Link
+              href="/vehicles"
+              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+            >
+              Vehicles
+            </Link>
           </nav>
         </header>
         {children}
