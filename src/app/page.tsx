@@ -12,7 +12,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 pb-16 flex justify-center">
+      <section className="max-w-6xl mx-auto px-6 pb-16 flex justify-center">
         <ChatBox />
       </section>
     </main>
