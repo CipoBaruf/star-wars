@@ -28,12 +28,15 @@ export default function ChatBox({
     ]);
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch("/api/chat-enhanced", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: userMessage }),
+        body: JSON.stringify({
+          prompt: userMessage,
+          conversationHistory: messages,
+        }),
       });
 
       if (!response.ok) {
@@ -89,18 +92,20 @@ export default function ChatBox({
 
   const ChatMessageItem = ({ message }: { message: Message }) => {
     return (
-      <div className="mb-2 p-2 rounded-md bg-gray-50">
-        <div className="text-sm font-semibold text-gray-600 mb-1">
+      <div className="mb-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
+        <div className="text-sm font-semibold text-gray-600 mb-2">
           {message.role === "user" ? "You" : "AI"}
         </div>
-        <div className="text-gray-800">{message.content}</div>
+        <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+          {message.content}
+        </div>
       </div>
     );
   };
 
   return (
-    <div className={cn("w-full max-w-xl", className)}>
-      <div className="mb-4 max-h-96 overflow-y-auto rounded-lg border border-input bg-background p-4 shadow-sm">
+    <div className={cn("w-full max-w-4xl", className)}>
+      <div className="mb-4 max-h-[600px] overflow-y-auto rounded-lg border border-input bg-background p-6 shadow-sm">
         {messages.length === 0 && !incomingMessage && (
           <div className="text-center text-muted-foreground">
             Start a conversation about Star Wars!
@@ -115,19 +120,19 @@ export default function ChatBox({
           />
         )}
       </div>
-      <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <form onSubmit={handleSubmit} className="flex items-end gap-3">
         <input
           type="text"
           value={prompt}
           onChange={handleInputChange}
           placeholder={placeholder}
-          className="flex-1 rounded-md border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="flex-1 rounded-lg border border-input bg-background px-4 py-3 text-base outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           aria-label="Chat message"
           disabled={isLoading}
         />
         <button
           type="submit"
-          className="rounded-md bg-foreground px-4 py-2 text-background transition-colors hover:opacity-90 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="rounded-lg bg-foreground px-6 py-3 text-background transition-colors hover:opacity-90 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium"
           disabled={!prompt.trim() || isLoading}
           aria-label={isLoading ? "Sending message" : "Send message"}
         >

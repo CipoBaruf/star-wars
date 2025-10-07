@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
   PLANETS: "/api/planets",
   STARSHIPS: "/api/starships",
   VEHICLES: "/api/vehicles",
+  FILMS: "/api/films",
+  SPECIES: "/api/species",
   CHAT: "/api/chat",
 } as const;
 
@@ -22,6 +24,8 @@ export const SWAPI_ENDPOINTS = {
   PLANETS: "/planets/",
   STARSHIPS: "/starships/",
   VEHICLES: "/vehicles/",
+  FILMS: "/films/",
+  SPECIES: "/species/",
 } as const;
 
 // UI Constants
@@ -42,6 +46,8 @@ export const ERROR_MESSAGES = {
   PLANETS: "Failed to fetch planets",
   STARSHIPS: "Failed to fetch starships",
   VEHICLES: "Failed to fetch vehicles",
+  FILMS: "Failed to fetch films",
+  SPECIES: "Failed to fetch species",
   CHAT: "Failed to process chat request",
   GENERIC: "An error occurred",
 } as const;
@@ -60,4 +66,20 @@ export const PAGE_DESCRIPTIONS = {
   PLANETS: "Discover worlds from Tatooine to Coruscant and beyond.",
   STARSHIPS: "Explore starships from the Star Wars universe.",
   VEHICLES: "Explore speeders, walkers, and everything in between.",
+} as const;
+
+// API Configuration
+export const API_CONFIG = {
+  DEFAULT_BASE_URL: "http://localhost:3000",
+  PRODUCTION_BASE_URL:
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  TIMEOUT: 10000, // 10 seconds
+  RETRY_ATTEMPTS: 3,
+} as const;
+
+// Chat Configuration
+export const CHAT_CONFIG = {
+  MAX_MESSAGE_LENGTH: 1000,
+  RESPONSE_TIMEOUT: 30000, // 30 seconds
+  MAX_ENTITIES_PER_QUERY: 5,
 } as const;
