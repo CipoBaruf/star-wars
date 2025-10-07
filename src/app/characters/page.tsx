@@ -90,12 +90,10 @@ export default function CharactersPage() {
           ))}
         </div>
 
-        {/* Infinite scroll trigger */}
         <div ref={loadMoreRef} className="min-h-[100px] w-full">
           {hasMore && loadingMore && <InfiniteScrollLoader />}
         </div>
 
-        {/* End of list message */}
         {!hasMore && characters.length > 0 && (
           <div className="py-8 text-center text-muted-foreground">
             {locales.ui.endOfList}

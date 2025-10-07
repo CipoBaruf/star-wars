@@ -32,7 +32,6 @@ export default function Navigation() {
       aria-label={locales.aria.mainNavigation}
     >
       <div className="flex items-center justify-between">
-        {/* Logo/Title - visible on mobile */}
         <Link
           href="/"
           className="text-xl font-bold text-white md:hidden"
@@ -41,7 +40,6 @@ export default function Navigation() {
           SW
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden items-center gap-6 md:flex md:w-full">
           {links.map(link => {
             const isActive = pathname === link.href;
@@ -64,7 +62,6 @@ export default function Navigation() {
           })}
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
           className="rounded-md p-2 text-white transition-colors hover:bg-gray-800 md:hidden"
@@ -103,7 +100,6 @@ export default function Navigation() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="mt-4 flex flex-col gap-2 border-t border-gray-700 pt-4 md:hidden">
           {links.map(link => {

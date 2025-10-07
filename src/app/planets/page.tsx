@@ -90,12 +90,10 @@ export default function PlanetsPage() {
           ))}
         </div>
 
-        {/* Infinite scroll trigger */}
         <div ref={loadMoreRef} className="min-h-[100px] w-full">
           {hasMore && loadingMore && <InfiniteScrollLoader />}
         </div>
 
-        {/* End of list message */}
         {!hasMore && planets.length > 0 && (
           <div className="py-8 text-center text-muted-foreground">
             {locales.ui.endOfList}
