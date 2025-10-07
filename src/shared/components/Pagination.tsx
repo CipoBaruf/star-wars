@@ -1,25 +1,30 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import { PAGINATION } from "@/lib/constants";
+import { locales } from "@/shared/locales";
 import type { PaginationProps } from "@/shared/types";
+
+const MAX_VISIBLE_PAGES = 5;
 
 const Pagination = memo(
   ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
     const pages = useMemo(() => {
-      const maxVisible = Math.min(PAGINATION.MAX_VISIBLE_PAGES, totalPages);
+      const maxVisible = Math.min(MAX_VISIBLE_PAGES, totalPages);
       return Array.from({ length: maxVisible }, (_, i) => i + 1);
     }, [totalPages]);
 
     return (
-      <div className="mt-8 flex items-center justify-center gap-2">
+      <nav
+        className="mt-8 flex items-center justify-center gap-2"
+        aria-label={locales.aria.pagination}
+      >
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={PAGINATION.BUTTON_STYLES.DISABLED}
-          aria-label="Previous page"
+          className="rounded-md border border-gray-700 px-3 py-2 transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label={locales.aria.previousPage}
         >
-          Previous
+          {locales.ui.previous}
         </button>
 
         <div className="flex gap-1">
@@ -27,12 +32,12 @@ const Pagination = memo(
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={
+              className={`rounded-md border px-3 py-2 transition-colors ${
                 currentPage === page
-                  ? PAGINATION.BUTTON_STYLES.ACTIVE
-                  : PAGINATION.BUTTON_STYLES.DEFAULT
-              }
-              aria-label={`Go to page ${page}`}
+                  ? "border-blue-500 bg-blue-500 text-white"
+                  : "border-gray-700 hover:bg-gray-800"
+              }`}
+              aria-label={`${locales.aria.goToPage} ${page}`}
               aria-current={currentPage === page ? "page" : undefined}
             >
               {page}
@@ -43,12 +48,12 @@ const Pagination = memo(
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={PAGINATION.BUTTON_STYLES.DISABLED}
-          aria-label="Next page"
+          className="rounded-md border border-gray-700 px-3 py-2 transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label={locales.aria.nextPage}
         >
-          Next
+          {locales.ui.next}
         </button>
-      </div>
+      </nav>
     );
   }
 );
