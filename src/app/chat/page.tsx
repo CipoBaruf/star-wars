@@ -3,7 +3,7 @@ import { locales } from "@/shared/locales";
 
 export default function ChatPage() {
   return (
-    <main className="flex h-[calc(100dvh-64px)] w-full flex-col sm:h-[calc(100dvh-73px)]">
+    <main className="flex h-[calc(100dvh-64px)] w-full flex-col overflow-hidden sm:h-[calc(100dvh-73px)]">
       <section className="mx-auto hidden max-w-5xl flex-shrink-0 px-4 pb-6 pt-8 text-center sm:block sm:px-6 sm:pb-8 sm:pt-12">
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
           {locales.pages.chat.title}

@@ -20,15 +20,27 @@ export default function ChatBox({
   const [messages, setMessages] = useState<Message[]>([]);
   const [incomingMessage, setIncomingMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastUserMessageRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToLastUserMessage = () => {
+    if (lastUserMessageRef.current) {
+      const container = lastUserMessageRef.current.parentElement;
+      const elementTop = lastUserMessageRef.current.offsetTop;
+
+      // Scroll with offset to account for padding and show some space above
+      container?.scrollTo({
+        top: elementTop - 100,
+        behavior: "smooth",
+      });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, incomingMessage]);
+    if (messages.length === 0) return;
+
+    scrollToLastUserMessage();
+  }, [messages, incomingMessage, isLoading]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -113,10 +125,17 @@ export default function ChatBox({
     setPrompt(e.target.value);
   };
 
-  const ChatMessageItem = ({ message }: { message: Message }) => {
+  const ChatMessageItem = ({
+    message,
+    isLastUserMessage = false,
+  }: {
+    message: Message;
+    isLastUserMessage?: boolean;
+  }) => {
     const isUser = message.role === "user";
     return (
       <div
+        ref={isLastUserMessage ? lastUserMessageRef : null}
         className={`mb-4 max-w-[80%] ${isUser ? "ml-auto text-right" : "mr-auto"}`}
       >
         <div
@@ -144,9 +163,25 @@ export default function ChatBox({
             {locales.pages.chat.emptyState}
           </div>
         )}
-        {messages.map((message, index) => (
-          <ChatMessageItem key={index} message={message} />
-        ))}
+        {messages.map((message, index) => {
+          // Find the last user message index
+          const lastUserMessageIndex =
+            messages.length > 0
+              ? [...messages].reverse().findIndex(m => m.role === "user")
+              : -1;
+          const actualLastUserIndex =
+            lastUserMessageIndex !== -1
+              ? messages.length - 1 - lastUserMessageIndex
+              : -1;
+
+          return (
+            <ChatMessageItem
+              key={index}
+              message={message}
+              isLastUserMessage={index === actualLastUserIndex}
+            />
+          );
+        })}
         {incomingMessage && (
           <ChatMessageItem
             message={{ role: "assistant", content: incomingMessage }}
