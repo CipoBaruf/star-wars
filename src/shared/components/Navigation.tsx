@@ -5,7 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { locales } from "@/shared/locales";
 
-export default function Navigation() {
+interface NavigationProps {
+  pageTitle?: string;
+  showPageTitle?: boolean;
+}
+
+export default function Navigation({
+  pageTitle,
+  showPageTitle = false,
+}: NavigationProps = {}) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -31,7 +39,7 @@ export default function Navigation() {
       className="mx-auto max-w-5xl p-4"
       aria-label={locales.aria.mainNavigation}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between md:justify-start">
         <Link
           href="/"
           className="text-xl font-bold text-white md:hidden"
@@ -39,6 +47,18 @@ export default function Navigation() {
         >
           SW
         </Link>
+
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-500 ease-out md:static md:left-auto md:translate-x-0 ${
+            showPageTitle ? "max-w-[250px] opacity-100" : "max-w-0 opacity-0"
+          }`}
+        >
+          {pageTitle && (
+            <span className="whitespace-nowrap text-base font-bold tracking-wide text-white">
+              {pageTitle}
+            </span>
+          )}
+        </div>
 
         <div className="hidden items-center gap-6 md:flex md:w-full">
           {links.map(link => {

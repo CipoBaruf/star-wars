@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Navigation } from "@/shared/components";
+import { ClientLayout } from "@/shared/components";
 import { locales } from "@/shared/locales";
 import "./globals.css";
 
@@ -29,10 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-          <Navigation />
-        </header>
-        {children}
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
