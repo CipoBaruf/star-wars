@@ -6,15 +6,18 @@ import type { LoadingSkeletonProps } from "@/shared/types";
 const LoadingSkeleton = memo(
   ({ count = 6, className = "" }: LoadingSkeletonProps) => {
     return (
-      <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-3 ${className}`}>
+      <div className={`grid gap-6 md:grid-cols-2 lg:grid-cols-3 ${className}`}>
         {Array.from({ length: count }, (_, i) => (
-          <div key={i} className="border rounded-lg p-4 animate-pulse">
-            <div className="h-6 bg-gray-200 rounded mb-2"></div>
+          <div key={i} className="card-base bg-glass animate-pulse">
+            <div className="mb-4 h-7 w-3/4 rounded-lg bg-gray-700" />
+
             <div className="space-y-2">
-              <div className="h-3 bg-gray-200 rounded"></div>
-              <div className="h-3 bg-gray-200 rounded"></div>
-              <div className="h-3 bg-gray-200 rounded"></div>
-              <div className="h-3 bg-gray-200 rounded"></div>
+              <div className="h-4 w-full rounded bg-gray-800" />
+              <div className="h-4 w-5/6 rounded bg-gray-800" />
+              <div className="h-4 w-full rounded bg-gray-800" />
+              <div className="h-4 w-4/5 rounded bg-gray-800" />
+              <div className="h-4 w-full rounded bg-gray-800" />
+              <div className="h-4 w-3/4 rounded bg-gray-800" />
             </div>
           </div>
         ))}

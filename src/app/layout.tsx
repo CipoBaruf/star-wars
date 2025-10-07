@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
+import { Navigation } from "@/shared/components";
+import { locales } from "@/shared/locales";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,9 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Star Wars source of true",
-  description:
-    "Search with Star Wars Yoda Intelligence: The new deep space galaxy AI",
+  title: locales.site.title,
+  description: locales.site.description,
 };
 
 export default function RootLayout({
@@ -29,43 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <nav
-            className="max-w-5xl mx-auto flex items-center gap-6 p-4"
-            role="navigation"
-            aria-label="Main navigation"
-          >
-            <Link
-              href="/"
-              className="font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
-            >
-              Home
-            </Link>
-            <Link
-              href="/characters"
-              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
-            >
-              Characters
-            </Link>
-            <Link
-              href="/planets"
-              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
-            >
-              Planets
-            </Link>
-            <Link
-              href="/spaceships"
-              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
-            >
-              Spaceships
-            </Link>
-            <Link
-              href="/vehicles"
-              className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
-            >
-              Vehicles
-            </Link>
-          </nav>
+        <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <Navigation />
         </header>
         {children}
       </body>

@@ -28,19 +28,7 @@ export const SWAPI_ENDPOINTS = {
   SPECIES: "/species/",
 } as const;
 
-// UI Constants
-export const PAGINATION = {
-  MAX_VISIBLE_PAGES: 5,
-  BUTTON_STYLES: {
-    DEFAULT: "px-3 py-2 border rounded-md hover:bg-gray-50",
-    ACTIVE:
-      "px-3 py-2 border rounded-md bg-blue-500 text-white border-blue-500",
-    DISABLED:
-      "px-3 py-2 border rounded-md disabled:opacity-50 disabled:cursor-not-allowed",
-  },
-} as const;
-
-// Error Messages
+// Error Messages - Keep these for API error handling
 export const ERROR_MESSAGES = {
   CHARACTERS: "Failed to fetch characters",
   PLANETS: "Failed to fetch planets",
@@ -50,22 +38,6 @@ export const ERROR_MESSAGES = {
   SPECIES: "Failed to fetch species",
   CHAT: "Failed to process chat request",
   GENERIC: "An error occurred",
-} as const;
-
-// Loading Messages
-export const LOADING_MESSAGES = {
-  CHARACTERS: "Loading characters...",
-  PLANETS: "Loading planets...",
-  STARSHIPS: "Loading starships...",
-  VEHICLES: "Loading vehicles...",
-} as const;
-
-// Page Descriptions
-export const PAGE_DESCRIPTIONS = {
-  CHARACTERS: "Browse notable figures across the Star Wars saga.",
-  PLANETS: "Discover worlds from Tatooine to Coruscant and beyond.",
-  STARSHIPS: "Explore starships from the Star Wars universe.",
-  VEHICLES: "Explore speeders, walkers, and everything in between.",
 } as const;
 
 // API Configuration

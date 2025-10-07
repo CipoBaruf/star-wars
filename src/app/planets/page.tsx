@@ -1,114 +1,106 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import {
-  API_ENDPOINTS,
-  ITEMS_PER_PAGE,
-  ERROR_MESSAGES,
-  PAGE_DESCRIPTIONS,
-} from "@/lib/constants";
+import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { locales } from "@/shared/locales";
 import type { Planet } from "@/shared/types";
-import { Pagination, LoadingSkeleton } from "@/shared/components";
+import {
+  LoadingSkeleton,
+  InfoCard,
+  ErrorMessage,
+  InfiniteScrollLoader,
+  BackToTop,
+} from "@/shared/components";
+import { useInfiniteScrollData } from "@/shared/hooks";
 
 export default function PlanetsPage() {
-  const [planets, setPlanets] = useState<Planet[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const fetchPlanets = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(
-        `${API_ENDPOINTS.PLANETS}?page=${currentPage}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setPlanets(data.results);
-      setTotalPages(Math.ceil(data.count / ITEMS_PER_PAGE));
-    } catch (err) {
-      setError(ERROR_MESSAGES.PLANETS);
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage]);
-
-  useEffect(() => {
-    fetchPlanets();
-  }, [fetchPlanets]);
+  const {
+    items: planets,
+    loading,
+    loadingMore,
+    error,
+    hasMore,
+    loadMoreRef,
+    refetch,
+  } = useInfiniteScrollData<Planet>({
+    apiEndpoint: API_ENDPOINTS.PLANETS,
+    errorMessage: ERROR_MESSAGES.PLANETS,
+  });
 
   if (loading)
     return (
-      <main className="max-w-5xl mx-auto p-8">
-        <h1 className="text-3xl font-bold mb-4">Planets</h1>
-        <p className="text-muted-foreground mb-6">
-          {PAGE_DESCRIPTIONS.PLANETS}
+      <main className="mx-auto max-w-5xl p-4 sm:p-8">
+        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
+          {locales.pages.planets.title}
+        </h1>
+        <p className="mb-6 text-sm text-muted-foreground sm:text-base">
+          {locales.pages.planets.description}
         </p>
         <LoadingSkeleton />
       </main>
     );
+
   if (error)
     return (
-      <div className="max-w-5xl mx-auto p-8 text-red-500">Error: {error}</div>
+      <main className="mx-auto max-w-5xl p-4 sm:p-8">
+        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
+          {locales.pages.planets.title}
+        </h1>
+        <ErrorMessage message={error} onRetry={refetch} />
+      </main>
     );
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   return (
-    <main className="max-w-5xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-4">Planets</h1>
-      <p className="text-muted-foreground mb-6">{PAGE_DESCRIPTIONS.PLANETS}</p>
+    <>
+      <main className="mx-auto max-w-5xl p-4 sm:p-8">
+        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
+          {locales.pages.planets.title}
+        </h1>
+        <p className="mb-6 text-sm text-muted-foreground sm:text-base">
+          {locales.pages.planets.description}
+        </p>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {planets.map(planet => (
-          <div
-            key={planet.url}
-            className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
-            <h3 className="font-semibold text-lg mb-2">{planet.name}</h3>
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <p>
-                <strong>Climate:</strong> {planet.climate}
-              </p>
-              <p>
-                <strong>Terrain:</strong> {planet.terrain}
-              </p>
-              <p>
-                <strong>Population:</strong> {planet.population}
-              </p>
-              <p>
-                <strong>Diameter:</strong> {planet.diameter} km
-              </p>
-              <p>
-                <strong>Gravity:</strong> {planet.gravity}
-              </p>
-              <p>
-                <strong>Surface Water:</strong> {planet.surface_water}%
-              </p>
-            </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {planets.map(planet => (
+            <InfoCard
+              key={planet.url}
+              title={planet.name}
+              fields={[
+                {
+                  label: locales.fields.climate,
+                  value: planet.climate,
+                  capitalize: true,
+                },
+                {
+                  label: locales.fields.terrain,
+                  value: planet.terrain,
+                  capitalize: true,
+                },
+                { label: locales.fields.population, value: planet.population },
+                {
+                  label: locales.fields.diameter,
+                  value: `${planet.diameter} km`,
+                },
+                { label: locales.fields.gravity, value: planet.gravity },
+                {
+                  label: locales.fields.surfaceWater,
+                  value: `${planet.surface_water}%`,
+                },
+              ]}
+            />
+          ))}
+        </div>
+
+        <div ref={loadMoreRef} className="min-h-[100px] w-full">
+          {hasMore && loadingMore && <InfiniteScrollLoader />}
+        </div>
+
+        {!hasMore && planets.length > 0 && (
+          <div className="py-8 text-center text-muted-foreground">
+            {locales.ui.endOfList}
           </div>
-        ))}
-      </div>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-
-      <div className="mt-4 text-center text-sm text-muted-foreground">
-        Page {currentPage} of {totalPages}
-      </div>
-    </main>
+        )}
+      </main>
+      <BackToTop />
+    </>
   );
 }

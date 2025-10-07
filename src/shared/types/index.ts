@@ -18,6 +18,8 @@ export type {
   ChatBoxProps,
   PaginationProps,
   LoadingSkeletonProps,
+  InfoCardField,
+  InfoCardProps,
   APIResponse,
   PageState,
 } from "./common";

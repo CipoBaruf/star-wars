@@ -29,6 +29,18 @@ export interface LoadingSkeletonProps {
   className?: string;
 }
 
+export interface InfoCardField {
+  label: string;
+  value: string | number;
+  capitalize?: boolean;
+  alignRight?: boolean;
+}
+
+export interface InfoCardProps {
+  title: string;
+  fields: InfoCardField[];
+}
+
 // API Response types
 export interface APIResponse<T> {
   data: SWAPIResponse<T> | null;
