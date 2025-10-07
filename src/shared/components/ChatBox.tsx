@@ -131,11 +131,9 @@ export default function ChatBox({
   };
 
   return (
-    <div
-      className={cn("w-full max-w-4xl flex flex-col rounded-lg p-4", className)}
-    >
+    <div className={cn("w-full max-w-4xl flex flex-col rounded-lg", className)}>
       <div
-        className={`flex-1 min-h-0 overflow-y-auto p-4 ${
+        className={`flex-1 min-h-0 overflow-y-auto py-4 ${
           messages.length === 0 && !incomingMessage
             ? "flex items-center justify-center"
             : ""
@@ -156,7 +154,7 @@ export default function ChatBox({
         )}
         <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={handleSubmit} className="flex-shrink-0 p-4 rounded-b-xl">
+      <form onSubmit={handleSubmit} className="flex-shrink-0 py-4 rounded-b-xl">
         <div className="relative ai-border-animate rounded-full p-4">
           {isLoading && !incomingMessage ? (
             <div className="flex items-center gap-1 py-1">
