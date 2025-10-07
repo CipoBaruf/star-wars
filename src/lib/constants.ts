@@ -82,4 +82,8 @@ export const CHAT_CONFIG = {
   MAX_MESSAGE_LENGTH: 1000,
   RESPONSE_TIMEOUT: 30000, // 30 seconds
   MAX_ENTITIES_PER_QUERY: 5,
+  MAX_CONVERSATION_HISTORY: 10, // Limit conversation history
+  GEMINI_TIMEOUT: 25000, // 25 seconds for Gemini calls
+  MAX_RETRIES: 2,
+  RETRY_DELAY: 1000, // 1 second
 } as const;

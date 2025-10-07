@@ -1,5 +1,16 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { API_CONFIG } from "@/lib/constants";
+import { API_CONFIG, CHAT_CONFIG } from "@/lib/constants";
+import {
+  Character,
+  Planet,
+  Starship,
+  Message,
+  EnhancedCharacter,
+  EnhancedPlanet,
+  EnhancedStarship,
+  SWAPIData,
+  QueryIntent,
+} from "@/shared/types";
 
 const apiKey = process.env.GOOGLE_API_KEY;
 if (!apiKey) {
@@ -8,42 +19,53 @@ if (!apiKey) {
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
-// Intent detection interface
-interface QueryIntent {
-  type:
-    | "character"
-    | "planet"
-    | "starship"
-    | "vehicle"
-    | "film"
-    | "species"
-    | "comparison"
-    | "relationship"
-    | "unknown";
-  entities: string[];
-  requiresMultipleCalls: boolean;
-  relatedData: string[];
-  isSWAPIRelevant: boolean;
-}
+// Utility function to add timeout to promises
+const withTimeout = <T>(promise: Promise<T>, timeoutMs: number): Promise<T> => {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`Operation timed out after ${timeoutMs}ms`)),
+        timeoutMs
+      )
+    ),
+  ]);
+};
 
-// SWAPI data interface
-interface SWAPIData {
-  characters?: any[];
-  planets?: any[];
-  starships?: any[];
-  vehicles?: any[];
-  films?: any[];
-  species?: any[];
-}
+// Utility function for retry logic
+const withRetry = async <T>(
+  operation: () => Promise<T>,
+  maxRetries: number = CHAT_CONFIG.MAX_RETRIES,
+  delay: number = CHAT_CONFIG.RETRY_DELAY
+): Promise<T> => {
+  let lastError: Error;
 
-// Extract context from conversation history
-const extractContextFromHistory = (conversationHistory: any[]): string => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error as Error;
+      if (attempt < maxRetries) {
+        await new Promise(resolve =>
+          setTimeout(resolve, delay * (attempt + 1))
+        );
+      }
+    }
+  }
+
+  throw lastError!;
+};
+
+// Extract context from conversation history with limits
+const extractContextFromHistory = (conversationHistory: Message[]): string => {
   if (!conversationHistory || conversationHistory.length === 0) return "";
 
-  // Get the last few messages for context
-  const recentMessages = conversationHistory.slice(-4); // Last 4 messages
-  const contextText = recentMessages
-    .map((msg: any) => `${msg.role}: ${msg.content}`)
+  // Limit conversation history to prevent context overflow
+  const limitedHistory = conversationHistory.slice(
+    -CHAT_CONFIG.MAX_CONVERSATION_HISTORY
+  );
+  const contextText = limitedHistory
+    .map((msg: Message) => `${msg.role}: ${msg.content}`)
     .join(" ");
 
   return contextText;
@@ -52,7 +74,7 @@ const extractContextFromHistory = (conversationHistory: any[]): string => {
 // Intent detection function
 const detectUserIntent = (
   prompt: string,
-  conversationHistory: any[] = []
+  conversationHistory: Message[] = []
 ): QueryIntent => {
   const lowerPrompt = prompt.toLowerCase();
 
@@ -337,43 +359,61 @@ const extractEntities = (prompt: string, entityList: string[]): string[] => {
   return entityList.filter(entity => lowerPrompt.includes(entity));
 };
 
-// SWAPI data fetcher using internal API routes
+// SWAPI data fetcher using internal API routes with improved error handling
 const fetchSWAPIData = async (intent: QueryIntent): Promise<SWAPIData> => {
   const data: SWAPIData = {};
 
   try {
+    // Limit entities to prevent excessive API calls
+    const limitedEntities = intent.entities.slice(
+      0,
+      CHAT_CONFIG.MAX_ENTITIES_PER_QUERY
+    );
     // Fetch characters if needed
     if (intent.type === "character" || intent.relatedData.includes("all")) {
-      const characterPromises = intent.entities.map(async entity => {
-        const url = `${API_CONFIG.PRODUCTION_BASE_URL}/api/characters?search=${entity}`;
-        const response = await fetch(url);
-        const result = await response.json();
-        const characters = result.results || [];
+      const characterPromises = limitedEntities.map(async entity => {
+        try {
+          const url = `${API_CONFIG.PRODUCTION_BASE_URL}/api/characters?search=${entity}`;
+          const response = await withTimeout(fetch(url), API_CONFIG.TIMEOUT);
 
-        // Fetch related data for each character
-        const enrichedCharacters = await Promise.all(
-          characters.map(async (character: any) => {
-            const enriched = { ...character };
+          if (!response.ok) {
+            console.warn(
+              `Failed to fetch character data for ${entity}: ${response.status}`
+            );
+            return [];
+          }
 
-            // Fetch homeworld name
-            if (
-              character.homeworld &&
-              character.homeworld.includes("/api/planets/")
-            ) {
-              try {
-                const homeworldResponse = await fetch(character.homeworld);
-                const homeworldData = await homeworldResponse.json();
-                enriched.homeworld_name = homeworldData.name;
-              } catch (e) {
-                enriched.homeworld_name = "Unknown";
+          const result = await response.json();
+          const characters = result.results || [];
+
+          // Fetch related data for each character
+          const enrichedCharacters = await Promise.all(
+            characters.map(async (character: Character) => {
+              const enriched: EnhancedCharacter = { ...character };
+
+              // Fetch homeworld name
+              if (
+                character.homeworld &&
+                character.homeworld.includes("/api/planets/")
+              ) {
+                try {
+                  const homeworldResponse = await fetch(character.homeworld);
+                  const homeworldData = await homeworldResponse.json();
+                  enriched.homeworld_name = homeworldData.name;
+                } catch {
+                  enriched.homeworld_name = "Unknown";
+                }
               }
-            }
 
-            return enriched;
-          })
-        );
+              return enriched;
+            })
+          );
 
-        return enrichedCharacters;
+          return enrichedCharacters;
+        } catch (error) {
+          console.error(`Error fetching character data for ${entity}:`, error);
+          return [];
+        }
       });
       data.characters = (await Promise.all(characterPromises)).flat();
     }
@@ -388,8 +428,8 @@ const fetchSWAPIData = async (intent: QueryIntent): Promise<SWAPIData> => {
 
         // Enrich planets with resident names
         const enrichedPlanets = await Promise.all(
-          planets.map(async (planet: any) => {
-            const enriched = { ...planet };
+          planets.map(async (planet: Planet) => {
+            const enriched: EnhancedPlanet = { ...planet };
 
             // Fetch resident names
             if (planet.residents && planet.residents.length > 0) {
@@ -402,7 +442,7 @@ const fetchSWAPIData = async (intent: QueryIntent): Promise<SWAPIData> => {
                     return residentData.name;
                   });
                 enriched.resident_names = await Promise.all(residentPromises);
-              } catch (e) {
+              } catch {
                 enriched.resident_names = [];
               }
             }
@@ -427,8 +467,8 @@ const fetchSWAPIData = async (intent: QueryIntent): Promise<SWAPIData> => {
 
         // Enrich starships with pilot names
         const enrichedStarships = await Promise.all(
-          starships.map(async (starship: any) => {
-            const enriched = { ...starship };
+          starships.map(async (starship: Starship) => {
+            const enriched: EnhancedStarship = { ...starship };
 
             // Fetch pilot names
             if (starship.pilots && starship.pilots.length > 0) {
@@ -441,7 +481,7 @@ const fetchSWAPIData = async (intent: QueryIntent): Promise<SWAPIData> => {
                     return pilotData.name;
                   });
                 enriched.pilot_names = await Promise.all(pilotPromises);
-              } catch (e) {
+              } catch {
                 enriched.pilot_names = [];
               }
             }
@@ -502,7 +542,7 @@ const generateEnhancedResponse = async (
   prompt: string,
   swapiData: SWAPIData,
   intent: QueryIntent,
-  conversationHistory: any[] = []
+  conversationHistory: Message[] = []
 ): Promise<string> => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
@@ -536,7 +576,7 @@ const generateEnhancedResponse = async (
   // Build conversation context
   const conversationContext =
     conversationHistory.length > 0
-      ? `\n\nCONVERSATION HISTORY:\n${conversationHistory.map((msg: any) => `${msg.role}: ${msg.content}`).join("\n")}`
+      ? `\n\nCONVERSATION HISTORY:\n${conversationHistory.map((msg: Message) => `${msg.role}: ${msg.content}`).join("\n")}`
       : "";
 
   // Create enhanced prompt
@@ -562,11 +602,27 @@ INSTRUCTIONS:
 Please provide a comprehensive, human-readable response based on the Star Wars data provided.`;
 
   try {
-    const result = await model.generateContent(enhancedPrompt);
+    const result = await withRetry(() =>
+      withTimeout(
+        model.generateContent(enhancedPrompt),
+        CHAT_CONFIG.GEMINI_TIMEOUT
+      )
+    );
     const response = await result.response;
     return response.text();
   } catch (error) {
     console.error("Error generating response:", error);
+
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("timed out")) {
+        return "I'm sorry, the request timed out. Please try again with a shorter question.";
+      }
+      if (error.message.includes("quota") || error.message.includes("limit")) {
+        return "I'm experiencing high demand right now. Please try again in a moment.";
+      }
+    }
+
     return "I'm sorry, I encountered an error while processing your request. Please try again.";
   }
 };
@@ -575,8 +631,22 @@ export async function POST(req: Request) {
   try {
     const { prompt, conversationHistory = [] } = await req.json();
 
-    if (!prompt) {
+    // Input validation
+    if (!prompt || typeof prompt !== "string") {
       return new Response("No prompt provided", { status: 400 });
+    }
+
+    if (prompt.length > CHAT_CONFIG.MAX_MESSAGE_LENGTH) {
+      return new Response(
+        `Message too long. Maximum ${CHAT_CONFIG.MAX_MESSAGE_LENGTH} characters allowed.`,
+        { status: 400 }
+      );
+    }
+
+    if (!Array.isArray(conversationHistory)) {
+      return new Response("Invalid conversation history format", {
+        status: 400,
+      });
     }
 
     // Step 1: Detect user intent (with conversation context)
