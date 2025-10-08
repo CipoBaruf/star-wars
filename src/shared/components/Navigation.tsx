@@ -36,7 +36,7 @@ export default function Navigation({
 
   return (
     <nav
-      className="mx-auto max-w-5xl p-4"
+      className="mx-auto w-full p-4"
       aria-label={locales.aria.mainNavigation}
     >
       <div className="flex items-center justify-between md:justify-start">
