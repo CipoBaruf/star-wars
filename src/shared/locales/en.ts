@@ -95,19 +95,14 @@ export const locales = {
 
   // Common UI text
   ui: {
-    loading: "Loading...",
     endOfList: "You've reached the end of the list",
     backToTop: "Back to top",
     tryAgain: "Try Again",
-    send: "Send",
-    sending: "Sending...",
   },
 
   // Error messages
   errors: {
     title: "Oops! Something went wrong",
-    generic: "An error occurred. Please try again.",
-    retry: "Try Again",
     characters: "Failed to fetch characters",
     planets: "Failed to fetch planets",
     starships: "Failed to fetch starships",
