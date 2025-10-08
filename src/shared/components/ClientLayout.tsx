@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import Navigation from "./Navigation";
+import { Navigation } from "./navigation";
 import { BackToTop } from "./index";
 import { locales } from "@/shared/locales";
 import { useScrollTitle } from "@/shared/hooks";

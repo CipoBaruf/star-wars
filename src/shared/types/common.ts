@@ -12,12 +12,6 @@ export interface Message {
   content: string;
 }
 
-export interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
-
 export interface LoadingSkeletonProps {
   count?: number;
   className?: string;

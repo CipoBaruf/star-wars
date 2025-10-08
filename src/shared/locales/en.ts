@@ -99,8 +99,6 @@ export const locales = {
     endOfList: "You've reached the end of the list",
     backToTop: "Back to top",
     tryAgain: "Try Again",
-    previous: "Previous",
-    next: "Next",
     send: "Send",
     sending: "Sending...",
   },
@@ -124,11 +122,7 @@ export const locales = {
     chatMessage: "Chat message",
     sendMessage: "Send message",
     sendingMessage: "Sending message",
-    previousPage: "Previous page",
-    nextPage: "Next page",
-    goToPage: "Go to page",
     mainNavigation: "Main navigation",
-    pagination: "Pagination",
   },
 } as const;
 

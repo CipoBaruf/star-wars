@@ -57,6 +57,7 @@ export const CHAT_CONFIG = {
 
 // Route Configuration
 export const ROUTES = {
+  HOME: "/",
   CHARACTERS: "/characters",
   PLANETS: "/planets",
   SPACESHIPS: "/spaceships",

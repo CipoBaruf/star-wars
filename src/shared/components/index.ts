@@ -1,10 +1,9 @@
 // Re-export all shared components
-export { default as Pagination } from "./Pagination";
 export { default as LoadingSkeleton } from "./LoadingSkeleton";
 export { default as LoadingDots } from "./LoadingDots";
 export { ChatBox, ChatMessage } from "./chat";
 export { default as InfoCard } from "./InfoCard";
-export { default as Navigation } from "./Navigation";
+export { Navigation, NavLink, MenuIcon } from "./navigation";
 export { default as ErrorMessage } from "./ErrorMessage";
 export { default as InfiniteScrollLoader } from "./InfiniteScrollLoader";
 export { default as BackToTop } from "./BackToTop";
