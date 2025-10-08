@@ -8,6 +8,7 @@ import React, {
   type ChangeEvent,
 } from "react";
 import { cn } from "@/lib/utils";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Message, ChatBoxProps } from "@/shared/types";
 
@@ -63,7 +64,7 @@ export default function ChatBox({
     ]);
 
     try {
-      const response = await fetch("/api/chat-enhanced", {
+      const response = await fetch(API_ENDPOINTS.CHAT_ENHANCED, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

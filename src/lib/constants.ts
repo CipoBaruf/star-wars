@@ -15,7 +15,7 @@ export const API_ENDPOINTS = {
   VEHICLES: "/api/vehicles",
   FILMS: "/api/films",
   SPECIES: "/api/species",
-  CHAT: "/api/chat",
+  CHAT_ENHANCED: "/api/chat-enhanced",
 } as const;
 
 // SWAPI Resource Endpoints
