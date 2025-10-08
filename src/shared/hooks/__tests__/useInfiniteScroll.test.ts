@@ -11,7 +11,9 @@ describe("useInfiniteScroll", () => {
     disconnectMock = jest.fn();
 
     mockIntersectionObserver = jest.fn(function (
-      this: IntersectionObserver,
+      this: IntersectionObserver & {
+        triggerIntersection?: (isIntersecting: boolean) => void;
+      },
       callback: IntersectionObserverCallback
     ) {
       this.observe = observeMock;
@@ -19,7 +21,7 @@ describe("useInfiniteScroll", () => {
       this.unobserve = jest.fn();
       this.takeRecords = jest.fn();
       // Store callback for testing
-      (this as any).triggerIntersection = (isIntersecting: boolean) => {
+      this.triggerIntersection = (isIntersecting: boolean) => {
         callback(
           [
             {
@@ -38,7 +40,8 @@ describe("useInfiniteScroll", () => {
       return this;
     });
 
-    global.IntersectionObserver = mockIntersectionObserver as any;
+    global.IntersectionObserver =
+      mockIntersectionObserver as unknown as typeof IntersectionObserver;
   });
 
   afterEach(() => {
@@ -124,7 +127,10 @@ describe("useInfiniteScroll", () => {
     result.current(mockNode);
 
     // Get the observer instance and trigger intersection
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const observerInstance = mockIntersectionObserver.mock.results[0]
+      .value as IntersectionObserver & {
+      triggerIntersection: (isIntersecting: boolean) => void;
+    };
     observerInstance.triggerIntersection(true);
 
     expect(onLoadMore).toHaveBeenCalledTimes(1);
@@ -144,7 +150,10 @@ describe("useInfiniteScroll", () => {
     const mockNode = document.createElement("div");
     result.current(mockNode);
 
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const observerInstance = mockIntersectionObserver.mock.results[0]
+      .value as IntersectionObserver & {
+      triggerIntersection: (isIntersecting: boolean) => void;
+    };
     observerInstance.triggerIntersection(true);
 
     expect(onLoadMore).not.toHaveBeenCalled();
@@ -164,7 +173,10 @@ describe("useInfiniteScroll", () => {
     const mockNode = document.createElement("div");
     result.current(mockNode);
 
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const observerInstance = mockIntersectionObserver.mock.results[0]
+      .value as IntersectionObserver & {
+      triggerIntersection: (isIntersecting: boolean) => void;
+    };
     observerInstance.triggerIntersection(true);
 
     expect(onLoadMore).not.toHaveBeenCalled();
@@ -184,7 +196,10 @@ describe("useInfiniteScroll", () => {
     const mockNode = document.createElement("div");
     result.current(mockNode);
 
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const observerInstance = mockIntersectionObserver.mock.results[0]
+      .value as IntersectionObserver & {
+      triggerIntersection: (isIntersecting: boolean) => void;
+    };
     observerInstance.triggerIntersection(false);
 
     expect(onLoadMore).not.toHaveBeenCalled();
@@ -269,7 +284,10 @@ describe("useInfiniteScroll", () => {
     result.current(mockNode);
 
     // Trigger with first callback
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const observerInstance = mockIntersectionObserver.mock.results[0]
+      .value as IntersectionObserver & {
+      triggerIntersection: (isIntersecting: boolean) => void;
+    };
     observerInstance.triggerIntersection(true);
     expect(onLoadMore1).toHaveBeenCalledTimes(1);
 

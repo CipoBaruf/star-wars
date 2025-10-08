@@ -74,10 +74,10 @@ describe("chatUtils", () => {
       const delays: number[] = [];
       const originalSetTimeout = global.setTimeout;
 
-      global.setTimeout = jest.fn((fn: any, delay: number) => {
+      global.setTimeout = jest.fn((fn: () => void, delay: number) => {
         delays.push(delay);
-        return originalSetTimeout(fn, 0) as any;
-      }) as any;
+        return originalSetTimeout(fn, 0);
+      }) as unknown as typeof global.setTimeout;
 
       try {
         await withRetry(operation, 2, 100);
@@ -123,8 +123,10 @@ describe("chatUtils", () => {
 
     // Test 11: Handles null/undefined gracefully
     it("should handle null conversation history", () => {
-      expect(extractContextFromHistory(null as any)).toBe("");
-      expect(extractContextFromHistory(undefined as any)).toBe("");
+      expect(extractContextFromHistory(null as unknown as Message[])).toBe("");
+      expect(extractContextFromHistory(undefined as unknown as Message[])).toBe(
+        ""
+      );
     });
   });
 

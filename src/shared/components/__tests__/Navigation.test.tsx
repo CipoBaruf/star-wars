@@ -10,13 +10,19 @@ jest.mock("next/navigation", () => ({
 
 // Mock Next.js Link component
 jest.mock("next/link", () => {
-  return ({ children, href, ...props }: any) => {
+  const MockLink = ({
+    children,
+    href,
+    ...props
+  }: React.PropsWithChildren<{ href: string; [key: string]: unknown }>) => {
     return (
       <a href={href} {...props}>
         {children}
       </a>
     );
   };
+  MockLink.displayName = "MockLink";
+  return MockLink;
 });
 
 describe("Navigation", () => {
@@ -164,7 +170,7 @@ describe("Navigation", () => {
 
   // Test 13: Toggle button changes icon
   it("should change toggle button icon when menu opens", () => {
-    const { container } = render(<Navigation />);
+    render(<Navigation />);
 
     const toggleButton = screen.getByLabelText("Toggle menu");
 
