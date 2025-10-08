@@ -1,11 +1,20 @@
 // API Configuration
 export const SWAPI_BASE_URL = "https://swapi.dev/api";
 
-// Pagination
-export const ITEMS_PER_PAGE = 10;
-
 // Cache Configuration
 export const CACHE_DURATION = "public, max-age=3600"; // 1 hour
+
+// UI Configuration
+export const UI_CONFIG = {
+  HEADER_HEIGHT_MOBILE: 64,
+  HEADER_HEIGHT_DESKTOP: 73,
+  SCROLL_TITLE_THRESHOLD: 50,
+  BACK_TO_TOP_THRESHOLD: 300,
+  TITLE_ANIMATION_DURATION: 500,
+  CHAT_SCROLL_OFFSET: 100,
+  INFINITE_SCROLL_ROOT_MARGIN: "300px",
+  INFINITE_SCROLL_THRESHOLD: 0.1,
+} as const;
 
 // API Endpoints
 export const API_ENDPOINTS = {
@@ -15,7 +24,7 @@ export const API_ENDPOINTS = {
   VEHICLES: "/api/vehicles",
   FILMS: "/api/films",
   SPECIES: "/api/species",
-  CHAT: "/api/chat",
+  CHAT_ENHANCED: "/api/chat-enhanced",
 } as const;
 
 // SWAPI Resource Endpoints
@@ -26,18 +35,6 @@ export const SWAPI_ENDPOINTS = {
   VEHICLES: "/vehicles/",
   FILMS: "/films/",
   SPECIES: "/species/",
-} as const;
-
-// Error Messages - Keep these for API error handling
-export const ERROR_MESSAGES = {
-  CHARACTERS: "Failed to fetch characters",
-  PLANETS: "Failed to fetch planets",
-  STARSHIPS: "Failed to fetch starships",
-  VEHICLES: "Failed to fetch vehicles",
-  FILMS: "Failed to fetch films",
-  SPECIES: "Failed to fetch species",
-  CHAT: "Failed to process chat request",
-  GENERIC: "An error occurred",
 } as const;
 
 // API Configuration
@@ -59,3 +56,20 @@ export const CHAT_CONFIG = {
   MAX_RETRIES: 2,
   RETRY_DELAY: 1000, // 1 second
 } as const;
+
+// Route Configuration
+export const ROUTES = {
+  HOME: "/",
+  CHARACTERS: "/characters",
+  PLANETS: "/planets",
+  SPACESHIPS: "/spaceships",
+  VEHICLES: "/vehicles",
+  CHAT: "/chat",
+} as const;
+
+export const DATA_PAGES = [
+  ROUTES.CHARACTERS,
+  ROUTES.PLANETS,
+  ROUTES.SPACESHIPS,
+  ROUTES.VEHICLES,
+] as const;

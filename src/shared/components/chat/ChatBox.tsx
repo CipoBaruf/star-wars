@@ -7,20 +7,18 @@ import React, {
   type FormEvent,
   type ChangeEvent,
 } from "react";
-import { cn } from "@/lib/utils";
+import { API_ENDPOINTS, UI_CONFIG } from "@/lib/constants";
 import { locales } from "@/shared/locales";
-import type { Message, ChatBoxProps } from "@/shared/types";
+import type { Message } from "@/shared/types";
+import LoadingDots from "../LoadingDots";
+import ChatMessage from "./ChatMessage";
 
-export default function ChatBox({
-  className,
-  placeholder = locales.pages.chat.placeholder,
-}: ChatBoxProps) {
-  const [prompt, setPrompt] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function ChatBox() {
+  const [prompt, setPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [incomingMessage, setIncomingMessage] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const lastUserMessageRef = useRef<HTMLDivElement>(null);
+  const lastUserMessageRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToLastUserMessage = () => {
@@ -28,9 +26,8 @@ export default function ChatBox({
       const container = lastUserMessageRef.current.parentElement;
       const elementTop = lastUserMessageRef.current.offsetTop;
 
-      // Scroll with offset to account for padding and show some space above
       container?.scrollTo({
-        top: elementTop - 100,
+        top: elementTop - UI_CONFIG.CHAT_SCROLL_OFFSET,
         behavior: "smooth",
       });
     }
@@ -63,7 +60,7 @@ export default function ChatBox({
     ]);
 
     try {
-      const response = await fetch("/api/chat-enhanced", {
+      const response = await fetch(API_ENDPOINTS.CHAT_ENHANCED, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +109,7 @@ export default function ChatBox({
         ...prevState,
         {
           role: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
+          content: locales.errors.chat,
         },
       ]);
       setIncomingMessage("");
@@ -125,32 +122,11 @@ export default function ChatBox({
     setPrompt(e.target.value);
   };
 
-  const ChatMessageItem = ({
-    message,
-    isLastUserMessage = false,
-  }: {
-    message: Message;
-    isLastUserMessage?: boolean;
-  }) => {
-    const isUser = message.role === "user";
-    return (
-      <div
-        ref={isLastUserMessage ? lastUserMessageRef : null}
-        className={`mb-4 max-w-[80%] ${isUser ? "ml-auto text-right" : "mr-auto"}`}
-      >
-        <div
-          className={`inline-block whitespace-pre-wrap rounded-full py-3 px-5 leading-relaxed ${
-            isUser ? "bg-gray-800 text-white" : "text-gray-200"
-          }`}
-        >
-          {message.content}
-        </div>
-      </div>
-    );
-  };
+  const lastUserMessageIndex =
+    messages.length > 0 ? messages.map(m => m.role).lastIndexOf("user") : -1;
 
   return (
-    <div className={cn("w-full max-w-4xl flex flex-col rounded-lg", className)}>
+    <div className="h-full w-full max-w-4xl flex flex-col rounded-lg">
       <div
         className={`flex-1 min-h-0 overflow-y-auto py-4 ${
           messages.length === 0 && !incomingMessage
@@ -163,56 +139,31 @@ export default function ChatBox({
             {locales.pages.chat.emptyState}
           </div>
         )}
-        {messages.map((message, index) => {
-          // Find the last user message index
-          const lastUserMessageIndex =
-            messages.length > 0
-              ? [...messages].reverse().findIndex(m => m.role === "user")
-              : -1;
-          const actualLastUserIndex =
-            lastUserMessageIndex !== -1
-              ? messages.length - 1 - lastUserMessageIndex
-              : -1;
-
-          return (
-            <ChatMessageItem
-              key={index}
-              message={message}
-              isLastUserMessage={index === actualLastUserIndex}
-            />
-          );
-        })}
+        {messages.map((message, index) => (
+          <ChatMessage
+            key={index}
+            message={message}
+            isLastUserMessage={index === lastUserMessageIndex}
+            lastUserMessageRef={lastUserMessageRef}
+          />
+        ))}
         {incomingMessage && (
-          <ChatMessageItem
+          <ChatMessage
             message={{ role: "assistant", content: incomingMessage }}
           />
         )}
-        <div ref={messagesEndRef} />
       </div>
       <form onSubmit={handleSubmit} className="flex-shrink-0 py-4 rounded-b-xl">
         <div className="relative ai-border-animate rounded-full p-4">
           {isLoading && !incomingMessage ? (
-            <div className="flex items-center gap-1 py-1">
-              <span
-                className="h-2 w-2 animate-bounce rounded-full bg-gray-400"
-                style={{ animationDelay: "0ms" }}
-              />
-              <span
-                className="h-2 w-2 animate-bounce rounded-full bg-gray-400"
-                style={{ animationDelay: "150ms" }}
-              />
-              <span
-                className="h-2 w-2 animate-bounce rounded-full bg-gray-400"
-                style={{ animationDelay: "300ms" }}
-              />
-            </div>
+            <LoadingDots />
           ) : (
             <input
               ref={inputRef}
               type="text"
               value={prompt}
               onChange={handleInputChange}
-              placeholder={placeholder}
+              placeholder={locales.pages.chat.placeholder}
               className="w-full bg-transparent text-white outline-none placeholder:text-white placeholder:opacity-100"
               aria-label={locales.aria.chatMessage}
               disabled={isLoading}

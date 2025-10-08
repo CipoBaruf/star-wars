@@ -6,19 +6,53 @@ interface UseInfiniteScrollDataOptions {
   errorMessage: string;
 }
 
+interface UseInfiniteScrollDataReturn<T> {
+  items: T[];
+  loading: boolean;
+  loadingMore: boolean;
+  error: string | null;
+  hasMore: boolean;
+  loadMoreRef: (node: HTMLElement | null) => void;
+  refetch: () => void;
+}
+
+/**
+ * Custom hook for fetching paginated data with infinite scroll
+ *
+ * Handles the complete lifecycle of infinite scrolling including:
+ * - Initial data fetch
+ * - Loading more pages on scroll
+ * - Error handling
+ * - Request cancellation on cleanup
+ */
 export function useInfiniteScrollData<T>({
   apiEndpoint,
   errorMessage,
-}: UseInfiniteScrollDataOptions) {
+}: UseInfiniteScrollDataOptions): UseInfiniteScrollDataReturn<T> {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const pageRef = useRef(1);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Keep errorMessage in a ref to avoid fetchData recreation
+  const errorMessageRef = useRef(errorMessage);
+  useEffect(() => {
+    errorMessageRef.current = errorMessage;
+  }, [errorMessage]);
 
   const fetchData = useCallback(
     async (page: number, append = false) => {
+      // Cancel any ongoing request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller for this request
+      abortControllerRef.current = new AbortController();
+
       try {
         if (append) {
           setLoadingMore(true);
@@ -27,7 +61,9 @@ export function useInfiniteScrollData<T>({
         }
         setError(null);
 
-        const response = await fetch(`${apiEndpoint}?page=${page}`);
+        const response = await fetch(`${apiEndpoint}?page=${page}`, {
+          signal: abortControllerRef.current.signal,
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -44,22 +80,29 @@ export function useInfiniteScrollData<T>({
         setHasMore(!!data.next);
         pageRef.current = page;
       } catch (err) {
-        setError(errorMessage);
-        console.error(err);
+        // Don't set error state if request was aborted
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+        setError(errorMessageRef.current);
+        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
         setLoadingMore(false);
       }
     },
-    [apiEndpoint, errorMessage]
+    [apiEndpoint]
   );
 
   const loadMore = useCallback(() => {
-    if (!loadingMore && hasMore) {
-      const nextPage = pageRef.current + 1;
-      fetchData(nextPage, true);
-    }
-  }, [loadingMore, hasMore, fetchData]);
+    const nextPage = pageRef.current + 1;
+    fetchData(nextPage, true);
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    pageRef.current = 1;
+    fetchData(1, false);
+  }, [fetchData]);
 
   const loadMoreRef = useInfiniteScroll({
     onLoadMore: loadMore,
@@ -67,9 +110,19 @@ export function useInfiniteScrollData<T>({
     isLoading: loadingMore,
   });
 
+  // Initial fetch
   useEffect(() => {
-    fetchData(1);
+    fetchData(1, false);
   }, [fetchData]);
+
+  // Cleanup: abort any ongoing requests
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   return {
     items,
@@ -78,6 +131,6 @@ export function useInfiniteScrollData<T>({
     error,
     hasMore,
     loadMoreRef,
-    refetch: () => fetchData(1),
+    refetch,
   };
 }

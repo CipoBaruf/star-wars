@@ -16,12 +16,3 @@ export interface Starship {
   films: string[];
   url: string;
 }
-
-export interface StarshipPageProps {
-  starships: Starship[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-}

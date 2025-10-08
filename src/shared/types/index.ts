@@ -13,13 +13,8 @@ export type {
   QueryIntent,
 } from "./enhanced";
 export type {
-  SWAPIResponse,
   Message,
-  ChatBoxProps,
-  PaginationProps,
   LoadingSkeletonProps,
   InfoCardField,
   InfoCardProps,
-  APIResponse,
-  PageState,
 } from "./common";

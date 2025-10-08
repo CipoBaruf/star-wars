@@ -1,13 +1,12 @@
 "use client";
 
-import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Starship } from "@/shared/types";
 import {
-  LoadingSkeleton,
   InfoCard,
-  ErrorMessage,
   InfiniteScrollLoader,
+  DataPageLayout,
 } from "@/shared/components";
 import { useInfiniteScrollData } from "@/shared/hooks";
 
@@ -22,41 +21,17 @@ export default function SpaceshipsPage() {
     refetch,
   } = useInfiniteScrollData<Starship>({
     apiEndpoint: API_ENDPOINTS.STARSHIPS,
-    errorMessage: ERROR_MESSAGES.STARSHIPS,
+    errorMessage: locales.errors.starships,
   });
 
-  if (loading)
-    return (
-      <main className="mx-auto max-w-5xl p-4 sm:p-8">
-        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
-          {locales.pages.spaceships.title}
-        </h1>
-        <p className="mb-6 text-sm text-muted-foreground sm:text-base">
-          {locales.pages.spaceships.description}
-        </p>
-        <LoadingSkeleton />
-      </main>
-    );
-
-  if (error)
-    return (
-      <main className="mx-auto max-w-5xl p-4 sm:p-8">
-        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
-          {locales.pages.spaceships.title}
-        </h1>
-        <ErrorMessage message={error} onRetry={refetch} />
-      </main>
-    );
-
   return (
-    <main className="mx-auto max-w-5xl p-4 sm:p-8">
-      <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
-        {locales.pages.spaceships.title}
-      </h1>
-      <p className="mb-6 text-sm text-muted-foreground sm:text-base">
-        {locales.pages.spaceships.description}
-      </p>
-
+    <DataPageLayout
+      title={locales.pages.spaceships.title}
+      description={locales.pages.spaceships.description}
+      loading={loading}
+      error={error}
+      onRetry={refetch}
+    >
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {starships.map(starship => (
           <InfoCard
@@ -102,6 +77,6 @@ export default function SpaceshipsPage() {
           {locales.ui.endOfList}
         </div>
       )}
-    </main>
+    </DataPageLayout>
   );
 }

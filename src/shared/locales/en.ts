@@ -95,14 +95,9 @@ export const locales = {
 
   // Common UI text
   ui: {
-    loading: "Loading...",
     endOfList: "You've reached the end of the list",
     backToTop: "Back to top",
     tryAgain: "Try Again",
-    previous: "Previous",
-    next: "Next",
-    send: "Send",
-    sending: "Sending...",
   },
 
   // Error messages
@@ -112,6 +107,8 @@ export const locales = {
     planets: "Failed to fetch planets",
     starships: "Failed to fetch starships",
     vehicles: "Failed to fetch vehicles",
+    films: "Failed to fetch films",
+    species: "Failed to fetch species",
     chat: "Sorry, I encountered an error. Please try again.",
   },
 
@@ -120,11 +117,7 @@ export const locales = {
     chatMessage: "Chat message",
     sendMessage: "Send message",
     sendingMessage: "Sending message",
-    previousPage: "Previous page",
-    nextPage: "Next page",
-    goToPage: "Go to page",
     mainNavigation: "Main navigation",
-    pagination: "Pagination",
   },
 } as const;
 

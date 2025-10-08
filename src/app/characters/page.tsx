@@ -1,13 +1,12 @@
 "use client";
 
-import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Character } from "@/shared/types";
 import {
-  LoadingSkeleton,
   InfoCard,
-  ErrorMessage,
   InfiniteScrollLoader,
+  DataPageLayout,
 } from "@/shared/components";
 import { useInfiniteScrollData } from "@/shared/hooks";
 
@@ -22,41 +21,17 @@ export default function CharactersPage() {
     refetch,
   } = useInfiniteScrollData<Character>({
     apiEndpoint: API_ENDPOINTS.CHARACTERS,
-    errorMessage: ERROR_MESSAGES.CHARACTERS,
+    errorMessage: locales.errors.characters,
   });
 
-  if (loading)
-    return (
-      <main className="mx-auto max-w-5xl p-4 sm:p-8">
-        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
-          {locales.pages.characters.title}
-        </h1>
-        <p className="mb-6 text-sm text-muted-foreground sm:text-base">
-          {locales.pages.characters.description}
-        </p>
-        <LoadingSkeleton />
-      </main>
-    );
-
-  if (error)
-    return (
-      <main className="mx-auto max-w-5xl p-4 sm:p-8">
-        <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
-          {locales.pages.characters.title}
-        </h1>
-        <ErrorMessage message={error} onRetry={refetch} />
-      </main>
-    );
-
   return (
-    <main className="mx-auto max-w-5xl p-4 sm:p-8">
-      <h1 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl">
-        {locales.pages.characters.title}
-      </h1>
-      <p className="mb-6 text-sm text-muted-foreground sm:text-base">
-        {locales.pages.characters.description}
-      </p>
-
+    <DataPageLayout
+      title={locales.pages.characters.title}
+      description={locales.pages.characters.description}
+      loading={loading}
+      error={error}
+      onRetry={refetch}
+    >
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {characters.map(character => (
           <InfoCard
@@ -97,6 +72,6 @@ export default function CharactersPage() {
           {locales.ui.endOfList}
         </div>
       )}
-    </main>
+    </DataPageLayout>
   );
 }
