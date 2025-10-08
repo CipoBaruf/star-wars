@@ -14,12 +14,3 @@ export interface Character {
   vehicles: string[];
   url: string;
 }
-
-export interface CharacterPageProps {
-  characters: Character[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-}

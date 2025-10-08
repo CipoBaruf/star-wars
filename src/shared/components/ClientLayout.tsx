@@ -25,7 +25,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const showTitle = useScrollTitle();
 
   const { pageTitle, shouldAlwaysShowTitle, showBackToTop } = useMemo(() => {
-    const isDataPage = DATA_PAGES.includes(pathname as any);
+    const isDataPage = DATA_PAGES.includes(
+      pathname as (typeof DATA_PAGES)[number]
+    );
     const isChatPage = pathname === ROUTES.CHAT;
 
     return {

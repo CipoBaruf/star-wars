@@ -12,12 +12,3 @@ export interface Film {
   species: string[];
   url: string;
 }
-
-export interface FilmPageProps {
-  films: Film[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-}

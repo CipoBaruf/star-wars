@@ -14,12 +14,3 @@ export interface Vehicle {
   films: string[];
   url: string;
 }
-
-export interface VehiclePageProps {
-  vehicles: Vehicle[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-}

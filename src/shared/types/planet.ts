@@ -12,12 +12,3 @@ export interface Planet {
   films: string[];
   url: string;
 }
-
-export interface PlanetPageProps {
-  planets: Planet[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-}

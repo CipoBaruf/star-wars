@@ -13,12 +13,3 @@ export interface Species {
   films: string[];
   url: string;
 }
-
-export interface SpeciesPageProps {
-  species: Species[];
-  loading: boolean;
-  error: string | null;
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-}
