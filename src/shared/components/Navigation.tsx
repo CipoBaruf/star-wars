@@ -49,7 +49,7 @@ export default function Navigation({
         </Link>
 
         <div
-          className={`absolute left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-500 ease-out md:static md:left-auto md:translate-x-0 ${
+          className={`absolute left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-500 ease-out md:hidden ${
             showPageTitle ? "max-w-[250px] opacity-100" : "max-w-0 opacity-0"
           }`}
         >
