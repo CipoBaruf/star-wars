@@ -9,3 +9,4 @@ export { default as InfiniteScrollLoader } from "./InfiniteScrollLoader";
 export { default as BackToTop } from "./BackToTop";
 export { default as ClientLayout } from "./ClientLayout";
 export { default as DataPageLayout } from "./DataPageLayout";
+export { default as HomeCard } from "./HomeCard";

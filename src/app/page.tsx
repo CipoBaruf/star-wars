@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeCard } from "@/shared/components";
 import { locales } from "@/shared/locales";
 
 export default function Home() {
@@ -15,53 +16,26 @@ export default function Home() {
 
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 sm:pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          <Link
+          <HomeCard
             href="/characters"
-            className="card-base bg-glass text-center group hover:border-gray-500 hover:bg-gray-800/50"
-          >
-            <h2 className="text-2xl font-bold mb-2 transition-colors group-hover:text-blue-400">
-              {locales.homeCards.characters.title}
-            </h2>
-            <p className="text-muted-foreground">
-              {locales.homeCards.characters.description}
-            </p>
-          </Link>
-
-          <Link
+            title={locales.homeCards.characters.title}
+            description={locales.homeCards.characters.description}
+          />
+          <HomeCard
             href="/planets"
-            className="card-base bg-glass text-center group hover:border-gray-500 hover:bg-gray-800/50"
-          >
-            <h2 className="text-2xl font-bold mb-2 transition-colors group-hover:text-blue-400">
-              {locales.homeCards.planets.title}
-            </h2>
-            <p className="text-muted-foreground">
-              {locales.homeCards.planets.description}
-            </p>
-          </Link>
-
-          <Link
+            title={locales.homeCards.planets.title}
+            description={locales.homeCards.planets.description}
+          />
+          <HomeCard
             href="/spaceships"
-            className="card-base bg-glass text-center group hover:border-gray-500 hover:bg-gray-800/50"
-          >
-            <h2 className="text-2xl font-bold mb-2 transition-colors group-hover:text-blue-400">
-              {locales.homeCards.spaceships.title}
-            </h2>
-            <p className="text-muted-foreground">
-              {locales.homeCards.spaceships.description}
-            </p>
-          </Link>
-
-          <Link
+            title={locales.homeCards.spaceships.title}
+            description={locales.homeCards.spaceships.description}
+          />
+          <HomeCard
             href="/vehicles"
-            className="card-base bg-glass text-center group hover:border-gray-500 hover:bg-gray-800/50"
-          >
-            <h2 className="text-2xl font-bold mb-2 transition-colors group-hover:text-blue-400">
-              {locales.homeCards.vehicles.title}
-            </h2>
-            <p className="text-muted-foreground">
-              {locales.homeCards.vehicles.description}
-            </p>
-          </Link>
+            title={locales.homeCards.vehicles.title}
+            description={locales.homeCards.vehicles.description}
+          />
         </div>
 
         <div className="mt-16 flex justify-center">
