@@ -1,5 +1,6 @@
 import { ChatBox } from "@/shared/components";
 import { locales } from "@/shared/locales";
+import { UI_CONFIG } from "@/lib/constants";
 
 export default function ChatPage() {
   return (

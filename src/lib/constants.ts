@@ -1,11 +1,17 @@
 // API Configuration
 export const SWAPI_BASE_URL = "https://swapi.dev/api";
 
-// Pagination
-export const ITEMS_PER_PAGE = 10;
-
 // Cache Configuration
 export const CACHE_DURATION = "public, max-age=3600"; // 1 hour
+
+// UI Configuration
+export const UI_CONFIG = {
+  HEADER_HEIGHT_MOBILE: 64,
+  HEADER_HEIGHT_DESKTOP: 73,
+  SCROLL_TITLE_THRESHOLD: 50,
+  TITLE_ANIMATION_DURATION: 500,
+  CHAT_SCROLL_OFFSET: 100,
+} as const;
 
 // API Endpoints
 export const API_ENDPOINTS = {
@@ -26,18 +32,6 @@ export const SWAPI_ENDPOINTS = {
   VEHICLES: "/vehicles/",
   FILMS: "/films/",
   SPECIES: "/species/",
-} as const;
-
-// Error Messages - Keep these for API error handling
-export const ERROR_MESSAGES = {
-  CHARACTERS: "Failed to fetch characters",
-  PLANETS: "Failed to fetch planets",
-  STARSHIPS: "Failed to fetch starships",
-  VEHICLES: "Failed to fetch vehicles",
-  FILMS: "Failed to fetch films",
-  SPECIES: "Failed to fetch species",
-  CHAT: "Failed to process chat request",
-  GENERIC: "An error occurred",
 } as const;
 
 // API Configuration

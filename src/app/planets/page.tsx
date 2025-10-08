@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Planet } from "@/shared/types";
 import {
@@ -21,7 +21,7 @@ export default function PlanetsPage() {
     refetch,
   } = useInfiniteScrollData<Planet>({
     apiEndpoint: API_ENDPOINTS.PLANETS,
-    errorMessage: ERROR_MESSAGES.PLANETS,
+    errorMessage: locales.errors.planets,
   });
 
   return (

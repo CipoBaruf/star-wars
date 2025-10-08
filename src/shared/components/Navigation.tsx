@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UI_CONFIG } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 
 interface NavigationProps {
@@ -49,9 +50,12 @@ export default function Navigation({
         </Link>
 
         <div
-          className={`absolute left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-500 ease-out md:hidden ${
+          className={`absolute left-1/2 -translate-x-1/2 overflow-hidden transition-all ease-out md:hidden ${
             showPageTitle ? "max-w-[250px] opacity-100" : "max-w-0 opacity-0"
           }`}
+          style={{
+            transitionDuration: `${UI_CONFIG.TITLE_ANIMATION_DURATION}ms`,
+          }}
         >
           {pageTitle && (
             <span className="whitespace-nowrap text-base font-bold tracking-wide text-white">

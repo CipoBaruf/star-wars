@@ -108,10 +108,14 @@ export const locales = {
   // Error messages
   errors: {
     title: "Oops! Something went wrong",
+    generic: "An error occurred. Please try again.",
+    retry: "Try Again",
     characters: "Failed to fetch characters",
     planets: "Failed to fetch planets",
     starships: "Failed to fetch starships",
     vehicles: "Failed to fetch vehicles",
+    films: "Failed to fetch films",
+    species: "Failed to fetch species",
     chat: "Sorry, I encountered an error. Please try again.",
   },
 

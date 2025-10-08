@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Character } from "@/shared/types";
 import {
@@ -21,7 +21,7 @@ export default function CharactersPage() {
     refetch,
   } = useInfiniteScrollData<Character>({
     apiEndpoint: API_ENDPOINTS.CHARACTERS,
-    errorMessage: ERROR_MESSAGES.CHARACTERS,
+    errorMessage: locales.errors.characters,
   });
 
   return (

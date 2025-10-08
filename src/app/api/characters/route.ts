@@ -1,8 +1,9 @@
-import { SWAPI_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { SWAPI_ENDPOINTS } from "@/lib/constants";
+import { locales } from "@/shared/locales";
 import { createSwapiRoute } from "@/lib/api-utils";
 
 export const GET = createSwapiRoute({
   endpoint: SWAPI_ENDPOINTS.PEOPLE,
   resourceName: "Characters",
-  errorMessage: ERROR_MESSAGES.CHARACTERS,
+  errorMessage: locales.errors.characters,
 });

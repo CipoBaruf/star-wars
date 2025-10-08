@@ -1,8 +1,9 @@
-import { SWAPI_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { SWAPI_ENDPOINTS } from "@/lib/constants";
+import { locales } from "@/shared/locales";
 import { createSwapiRoute } from "@/lib/api-utils";
 
 export const GET = createSwapiRoute({
   endpoint: SWAPI_ENDPOINTS.PLANETS,
   resourceName: "Planets",
-  errorMessage: ERROR_MESSAGES.PLANETS,
+  errorMessage: locales.errors.planets,
 });

@@ -8,7 +8,7 @@ import React, {
   type ChangeEvent,
 } from "react";
 import { cn } from "@/lib/utils";
-import { API_ENDPOINTS } from "@/lib/constants";
+import { API_ENDPOINTS, UI_CONFIG } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Message, ChatBoxProps } from "@/shared/types";
 
@@ -29,9 +29,8 @@ export default function ChatBox({
       const container = lastUserMessageRef.current.parentElement;
       const elementTop = lastUserMessageRef.current.offsetTop;
 
-      // Scroll with offset to account for padding and show some space above
       container?.scrollTo({
-        top: elementTop - 100,
+        top: elementTop - UI_CONFIG.CHAT_SCROLL_OFFSET,
         behavior: "smooth",
       });
     }

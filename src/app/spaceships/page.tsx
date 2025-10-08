@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Starship } from "@/shared/types";
 import {
@@ -21,7 +21,7 @@ export default function SpaceshipsPage() {
     refetch,
   } = useInfiniteScrollData<Starship>({
     apiEndpoint: API_ENDPOINTS.STARSHIPS,
-    errorMessage: ERROR_MESSAGES.STARSHIPS,
+    errorMessage: locales.errors.starships,
   });
 
   return (

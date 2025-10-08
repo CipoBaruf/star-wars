@@ -12,7 +12,7 @@ interface ClientLayoutProps {
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = usePathname();
-  const showTitle = useScrollTitle(50);
+  const showTitle = useScrollTitle();
 
   // Determine page title based on route
   const getPageTitle = () => {

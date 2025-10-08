@@ -1,6 +1,6 @@
 "use client";
 
-import { API_ENDPOINTS, ERROR_MESSAGES } from "@/lib/constants";
+import { API_ENDPOINTS } from "@/lib/constants";
 import { locales } from "@/shared/locales";
 import type { Vehicle } from "@/shared/types";
 import {
@@ -21,7 +21,7 @@ export default function VehiclesPage() {
     refetch,
   } = useInfiniteScrollData<Vehicle>({
     apiEndpoint: API_ENDPOINTS.VEHICLES,
-    errorMessage: ERROR_MESSAGES.VEHICLES,
+    errorMessage: locales.errors.vehicles,
   });
 
   return (
