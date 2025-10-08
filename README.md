@@ -2,6 +2,11 @@
 
 A modern Next.js application for exploring the Star Wars universe with AI-powered chat assistance. Browse characters, planets, starships, and vehicles from the SWAPI database with infinite scrolling and intelligent search.
 
+🌐 **Live Demo**: [https://star-wars-eight-neon.vercel.app/](https://star-wars-eight-neon.vercel.app/)
+
+
+## 
+
 ## ✨ Features
 
 - 🎬 **Character Explorer** - Browse heroes, villains, and iconic characters
