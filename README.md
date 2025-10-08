@@ -157,9 +157,3 @@ The test suite follows modern best practices:
 - **Comprehensive Edge Cases**: Null values, errors, loading states, race conditions
 - **Proper Mocking**: IntersectionObserver, fetch, Next.js router, browser APIs
 - **Fast Execution**: All 124 tests run in ~7-10 seconds
-
-## 🙏 Acknowledgments
-
-- [SWAPI](https://swapi.dev/) - The Star Wars API
-- [Google Gemini AI](https://ai.google.dev/) - AI chat functionality
-- [Next.js](https://nextjs.org/) - React framework
