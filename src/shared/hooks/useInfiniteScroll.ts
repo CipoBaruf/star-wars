@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import { UI_CONFIG } from "@/lib/constants";
 
 interface UseInfiniteScrollOptions {
   onLoadMore: () => void;
@@ -8,40 +9,53 @@ interface UseInfiniteScrollOptions {
   threshold?: number;
 }
 
+/**
+ * Custom hook for implementing infinite scroll using Intersection Observer API
+ */
 export function useInfiniteScroll({
   onLoadMore,
   hasMore,
   isLoading,
-  rootMargin = "300px",
-  threshold = 0.1,
-}: UseInfiniteScrollOptions) {
+  rootMargin = UI_CONFIG.INFINITE_SCROLL_ROOT_MARGIN,
+  threshold = UI_CONFIG.INFINITE_SCROLL_THRESHOLD,
+}: UseInfiniteScrollOptions): (node: HTMLElement | null) => void {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const onLoadMoreRef = useRef(onLoadMore);
+  const hasMoreRef = useRef(hasMore);
+  const isLoadingRef = useRef(isLoading);
 
-  // Keep the callback ref updated
+  // Keep refs updated with latest values
   useEffect(() => {
     onLoadMoreRef.current = onLoadMore;
   }, [onLoadMore]);
 
-  // Callback ref - called when element mounts/unmounts
+  useEffect(() => {
+    hasMoreRef.current = hasMore;
+  }, [hasMore]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
   const setRef = useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLElement | null) => {
       // Disconnect previous observer
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
 
-      // Don't set up observer if no node
-      if (!node) {
-        return;
-      }
+      // Early return if no node
+      if (!node) return;
 
-      // Create new observer
+      // Create new observer with stable callback using refs
       observerRef.current = new IntersectionObserver(
         entries => {
           const [entry] = entries;
-
-          if (entry.isIntersecting && hasMore && !isLoading) {
+          if (
+            entry.isIntersecting &&
+            hasMoreRef.current &&
+            !isLoadingRef.current
+          ) {
             onLoadMoreRef.current();
           }
         },
@@ -54,16 +68,12 @@ export function useInfiniteScroll({
 
       observerRef.current.observe(node);
     },
-    [hasMore, isLoading, rootMargin, threshold]
+    [rootMargin, threshold]
   );
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
+    return () => observerRef.current?.disconnect();
   }, []);
 
   return setRef;
