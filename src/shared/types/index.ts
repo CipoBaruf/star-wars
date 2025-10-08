@@ -15,7 +15,6 @@ export type {
 export type {
   SWAPIResponse,
   Message,
-  ChatBoxProps,
   PaginationProps,
   LoadingSkeletonProps,
   InfoCardField,

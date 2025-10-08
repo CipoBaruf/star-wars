@@ -12,12 +12,6 @@ export interface Message {
   content: string;
 }
 
-export interface ChatBoxProps {
-  className?: string;
-  placeholder?: string;
-  onSubmit?: (message: string) => void;
-}
-
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;

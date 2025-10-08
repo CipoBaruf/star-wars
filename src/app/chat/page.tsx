@@ -15,7 +15,7 @@ export default function ChatPage() {
       </section>
 
       <section className="mx-auto flex w-full max-w-6xl flex-1 min-h-0 justify-center px-4 pb-0 sm:px-6 sm:pb-6">
-        <ChatBox className="h-full w-full" />
+        <ChatBox />
       </section>
     </main>
   );

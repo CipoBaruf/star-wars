@@ -7,15 +7,11 @@ import React, {
   type FormEvent,
   type ChangeEvent,
 } from "react";
-import { cn } from "@/lib/utils";
 import { API_ENDPOINTS, UI_CONFIG } from "@/lib/constants";
 import { locales } from "@/shared/locales";
-import type { Message, ChatBoxProps } from "@/shared/types";
+import type { Message } from "@/shared/types";
 
-export default function ChatBox({
-  className,
-  placeholder = locales.pages.chat.placeholder,
-}: ChatBoxProps) {
+export default function ChatBox() {
   const [prompt, setPrompt] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -150,7 +146,7 @@ export default function ChatBox({
   };
 
   return (
-    <div className={cn("w-full max-w-4xl flex flex-col rounded-lg", className)}>
+    <div className="h-full w-full max-w-4xl flex flex-col rounded-lg">
       <div
         className={`flex-1 min-h-0 overflow-y-auto py-4 ${
           messages.length === 0 && !incomingMessage
@@ -212,7 +208,7 @@ export default function ChatBox({
               type="text"
               value={prompt}
               onChange={handleInputChange}
-              placeholder={placeholder}
+              placeholder={locales.pages.chat.placeholder}
               className="w-full bg-transparent text-white outline-none placeholder:text-white placeholder:opacity-100"
               aria-label={locales.aria.chatMessage}
               disabled={isLoading}
