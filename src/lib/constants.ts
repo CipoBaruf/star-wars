@@ -54,3 +54,19 @@ export const CHAT_CONFIG = {
   MAX_RETRIES: 2,
   RETRY_DELAY: 1000, // 1 second
 } as const;
+
+// Route Configuration
+export const ROUTES = {
+  CHARACTERS: "/characters",
+  PLANETS: "/planets",
+  SPACESHIPS: "/spaceships",
+  VEHICLES: "/vehicles",
+  CHAT: "/chat",
+} as const;
+
+export const DATA_PAGES = [
+  ROUTES.CHARACTERS,
+  ROUTES.PLANETS,
+  ROUTES.SPACESHIPS,
+  ROUTES.VEHICLES,
+] as const;

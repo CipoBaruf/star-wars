@@ -1,49 +1,39 @@
 "use client";
 
+import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "./Navigation";
 import { BackToTop } from "./index";
 import { locales } from "@/shared/locales";
 import { useScrollTitle } from "@/shared/hooks";
+import { ROUTES, DATA_PAGES } from "@/lib/constants";
 
 interface ClientLayoutProps {
   children: React.ReactNode;
 }
 
+const ROUTE_TITLE_MAP: Record<string, string> = {
+  [ROUTES.CHARACTERS]: locales.pages.characters.title,
+  [ROUTES.PLANETS]: locales.pages.planets.title,
+  [ROUTES.SPACESHIPS]: locales.pages.spaceships.title,
+  [ROUTES.VEHICLES]: locales.pages.vehicles.title,
+  [ROUTES.CHAT]: locales.pages.chat.title,
+};
+
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = usePathname();
   const showTitle = useScrollTitle();
 
-  // Determine page title based on route
-  const getPageTitle = () => {
-    switch (pathname) {
-      case "/characters":
-        return locales.pages.characters.title;
-      case "/planets":
-        return locales.pages.planets.title;
-      case "/spaceships":
-        return locales.pages.spaceships.title;
-      case "/vehicles":
-        return locales.pages.vehicles.title;
-      case "/chat":
-        return locales.pages.chat.title;
-      default:
-        return undefined;
-    }
-  };
+  const { pageTitle, shouldAlwaysShowTitle, showBackToTop } = useMemo(() => {
+    const isDataPage = DATA_PAGES.includes(pathname as any);
+    const isChatPage = pathname === ROUTES.CHAT;
 
-  // Determine if title should always show (for chat page)
-  const shouldAlwaysShowTitle = pathname === "/chat";
-
-  // Determine if we should show BackToTop button (data pages only)
-  const showBackToTop = [
-    "/characters",
-    "/planets",
-    "/spaceships",
-    "/vehicles",
-  ].includes(pathname);
-
-  const pageTitle = getPageTitle();
+    return {
+      pageTitle: ROUTE_TITLE_MAP[pathname],
+      shouldAlwaysShowTitle: isChatPage,
+      showBackToTop: isDataPage,
+    };
+  }, [pathname]);
 
   return (
     <>
